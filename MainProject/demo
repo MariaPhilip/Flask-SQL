@@ -1,0 +1,77 @@
+from flask import Flask, request, jsonify
+from flask_pymongo import PyMongo
+
+app = Flask(__name__)
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/your-database-name'
+mongo = PyMongo(app)
+
+# User schema
+user_schema = {
+    "uid": str,
+    "uname": str,
+    "password_hash": str,
+    "is_current_lender": bool,
+    "lender": {
+        "machine_already_in_use": bool,
+        "available_space": int,
+        "password": str,
+        "sudo_pass": str,
+        "is_pingable": bool
+    },
+    "lentee": {
+        "required_space": int,
+        "rented_machines": [{
+            "token": str,
+            "machine_ip": str,
+            "mount_path": str,
+            "checksum": {"filename1": str},
+        }],
+        "is_expired": bool,
+        "expiry_date": str,
+        "pass_phrase": str
+    }
+}
+
+# Machines schema
+machines_schema = {
+    "ip_address": {
+        "user_id": str,
+        "in_use": bool,
+        "space_to_lend": int,
+        "mount_path": str,
+        "precheck_done": bool,
+        "pass_to_scp": str,
+        "sudo_pass": bool
+    }
+}
+
+
+# Routes for Lentee
+@app.route('/update_ip', methods=['PUT'])
+def update_ip_address():
+    # Implement logic to update Lentee's IP address
+    pass
+
+@app.route('/receive_token', methods=['POST'])
+def receive_token():
+    # Implement logic to receive and validate token
+    pass
+
+@app.route('/ready_to_copy', methods=['GET'])
+def ready_to_copy():
+    # Implement logic to show files ready to be copied
+    pass
+
+# Routes for Lender
+@app.route('/create_partition', methods=['POST'])
+def create_partition():
+    # Implement logic to create and encrypt partition
+    pass
+
+@app.route('/execute_command', methods=['POST'])
+def execute_command():
+    # Implement logic to execute command received from port 4444
+    pass
+
+if __name__ == '__main__':
+    app.run(debug=True)
